@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View} from '../components/theme.tsx';
+import {Text, View} from '../../theme/theme';
 
 export default function Profile(): React.JSX.Element {
   return (

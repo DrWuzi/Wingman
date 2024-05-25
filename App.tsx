@@ -1,26 +1,29 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import {SafeAreaView, useColorScheme} from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {ITheme, ThemeProvider} from './src/theme/ThemeProvider.tsx';
+import {ThemeProvider} from './src/theme/theme';
+import Navigator from './src/navigation/Navigator';
+import {CatppuccinTheme} from './src/theme/CatppuccinTheme/Catppuccin.ts';
+import {ApiProvider} from './src/context/apiContext.tsx';
+import ValorantApi from './backend/valorant-api/api.ts';
+import {ValorantClientProvider} from './src/context/valorantClientContext.tsx';
+import ValorantClient from './backend/api/clients/valorant-client.ts';
+import GameContentClient from './backend/api/clients/game-content-client.ts';
+import { GameContentClientProvider } from './src/context/gameContentClientContext.tsx';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const valorantApi = new ValorantApi();
+  const gameContentClient = new GameContentClient();
+  const valorantClient = new ValorantClient(gameContentClient);
 
   return (
-    <ThemeProvider initialTheme={{} as ITheme}>
-      <SafeAreaView style={backgroundStyle} />
+    <ThemeProvider initialTheme={CatppuccinTheme.Mocha}>
+      <ApiProvider api={valorantApi}>
+        <GameContentClientProvider client={gameContentClient}>
+          <ValorantClientProvider client={valorantClient}>
+            <Navigator />
+          </ValorantClientProvider>
+        </GameContentClientProvider>
+      </ApiProvider>
     </ThemeProvider>
   );
 }

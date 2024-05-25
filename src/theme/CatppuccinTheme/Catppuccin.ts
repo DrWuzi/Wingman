@@ -1,7 +1,5 @@
-import { Mocha } from './Styles/Mocha.ts';
-import { CatppuccinLightTheme } from './Styles/CatppuccinLightTheme.ts';
+import {Mocha} from './Styles/Mocha.ts';
 
 export const CatppuccinTheme = {
-    Mocha,
-    CatppuccinLightTheme,
+  Mocha,
 };

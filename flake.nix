@@ -17,22 +17,24 @@
 
       sdk = (import android-nixpkgs { }).sdk (sdkPkgs:
         with sdkPkgs; [
-          build-tools-33-0-0
-          build-tools-30-0-3
+          #build-tools-33-0-0
+          #build-tools-30-0-3
+          build-tools-34-0-0
           cmdline-tools-latest
           emulator
       	  cmake-3-22-1
           platform-tools
           platforms-android-33
+          platforms-android-34
           system-images-android-32-google-apis-x86-64
-	        ndk-23-1-7779620
+	        ndk-26-1-10909125
       ]);
     in
     {
       devShells = forEachSystem
         (system:
           let
-            pkgs = import nixpkgs { 
+            pkgs = import nixpkgs {
 	            system = system;
 	            config.allowUnfree = true;
 	          };
@@ -46,12 +48,13 @@
           		      watchman
           		      nodejs_18
           		      yarn
-            		  ];
+                    gradle
+            	    ];
 
                   enterShell = ''
-            		    export LD_LIBRARY_PATH="${pkgs.libglvnd}/lib";
-            		    export PATH="${sdk}/bin ${sdk}/share/android-sdk/cmdline-tools/latest/bin:$PATH"
-            		    export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${sdk}/share/android-sdk/build-tools/33.0.0/aapt2"
+            	      export LD_LIBRARY_PATH="${pkgs.libglvnd}/lib";
+            	      export PATH="${sdk}/bin ${sdk}/share/android-sdk/cmdline-tools/latest/bin:$PATH"
+            		    export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${sdk}/share/android-sdk/build-tools/34.0.0/aapt2"
                     ${(builtins.readFile "${sdk}/nix-support/setup-hook")}
                   '';
                 }

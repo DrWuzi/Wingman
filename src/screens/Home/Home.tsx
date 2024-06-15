@@ -49,9 +49,14 @@ export default function Home({navigation}: Readonly<Props>): React.JSX.Element {
                 }
 
                 const ownedItems = ownerItemsResponse.unwrap();
-                const allAgents: Record<string, IAgent> = (
-                    await new AgentsByUuidEndpoint().query(gameContentClient)
-                ).unwrap();
+                const agentsResponse = await new AgentsByUuidEndpoint().query(gameContentClient);
+
+                if (agentsResponse.isErr()) {
+                    logError('Failed to fetch agents: ' + agentsResponse.getErr().message);
+                    return;
+                }
+
+                const allAgents: Record<string, IAgent> = agentsResponse.unwrap();
 
                 setAgents(
                     ownedItems.EntitlementsByTypes.map((entitlementByType: IEntitlementByType) =>
@@ -61,13 +66,12 @@ export default function Home({navigation}: Readonly<Props>): React.JSX.Element {
 
                 logDebug('Fetched agents: ' + JSON.stringify(agents));
 
-                const response = await new MapsEndpoint().query(gameContentClient);
-                if (response.isErr()) {
-                    logError('Failed to fetch agents: ' + response.getErr().message);
+                const mapsResponse = await new MapsEndpoint().query(gameContentClient);
+                if (mapsResponse.isErr()) {
+                    logError('Failed to fetch agents: ' + mapsResponse.getErr().message);
                 }
-                const maps = response.unwrap().data;
 
-                setMaps(maps);
+                setMaps(mapsResponse.unwrap().data);
             } catch (error) {
                 logError('Failed to fetch data: ' + error);
             }

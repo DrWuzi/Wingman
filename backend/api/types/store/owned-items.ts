@@ -9,18 +9,22 @@ export enum ItemTypeID {
     TITLES = 'de7caa6b-adf7-4588-bbd1-143831e786c6',
 }
 
+export interface IEntitlement {
+    /** UUID of the item type */
+    TypeID: ItemTypeID;
+    /** Item ID */
+    ItemID: string;
+    /** UUID */
+    InstanceID?: string | undefined;
+}
+
+export interface IEntitlementByType {
+    ItemTypeID: string;
+    Entitlements: IEntitlement[];
+}
+
 interface IOwnedItems {
-    EntitlementsByTypes: {
-        ItemTypeID: string;
-        Entitlements: {
-            /** UUID */
-            TypeID: ItemTypeID;
-            /** Item ID */
-            ItemID: string;
-            /** UUID */
-            InstanceID?: string | undefined;
-        }[];
-    }[];
+    EntitlementsByTypes: IEntitlementByType[];
 }
 
 export default IOwnedItems;

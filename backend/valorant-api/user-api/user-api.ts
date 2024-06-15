@@ -14,6 +14,7 @@ import {Cookies} from '@react-native-cookies/cookies';
 import ValorantClient from '../../api/clients/valorant-client';
 import {IGameContent} from '../game-content-api/game-content-types';
 import EntitlementEndpoint from '../../api/endpoints/authentication/entitlement';
+import GameContentClient from "../../api/clients/game-content-client.ts";
 
 export default class UserApi {
     private apiState: ValorantApiState;
@@ -338,7 +339,7 @@ export default class UserApi {
 
         let entitlementsToken: string;
         if (this.gameContent) {
-            const client = new ValorantClient(this.gameContent);
+            const client = new ValorantClient(new GameContentClient());
             const entitlementsResult = await new EntitlementEndpoint(accessToken).query(client);
             if (entitlementsResult.isErr()) {
                 return createApiResult(

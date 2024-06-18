@@ -38,7 +38,7 @@ export default function Home({navigation}: Readonly<Props>): React.JSX.Element {
                     logError('Home: No active user');
                     return;
                 }
-
+                logDebug(JSON.stringify(activeUser.authData, null, 2));
                 const ownerItemsResponse = await new OwnedItemsEndpoint(activeUser, ItemTypeID.AGENTS).query(
                     valorantClient,
                 );
@@ -48,7 +48,7 @@ export default function Home({navigation}: Readonly<Props>): React.JSX.Element {
                     return;
                 }
 
-                const ownedItems = ownerItemsResponse.unwrap();
+                const ownedItems = ownerItemsResponse.unwrap() as unknown as IEntitlementByType;
                 const agentsResponse = await new AgentsByUuidEndpoint().query(gameContentClient);
 
                 if (agentsResponse.isErr()) {
@@ -58,11 +58,7 @@ export default function Home({navigation}: Readonly<Props>): React.JSX.Element {
 
                 const allAgents: Record<string, IAgent> = agentsResponse.unwrap();
 
-                setAgents(
-                    ownedItems.EntitlementsByTypes.map((entitlementByType: IEntitlementByType) =>
-                        entitlementByType.Entitlements.map((agent: IEntitlement) => allAgents[agent.ItemID]),
-                    ).flat(),
-                );
+                setAgents(ownedItems.Entitlements.map((entitlement: IEntitlement) => allAgents[entitlement.ItemID]));
 
                 logDebug('Fetched agents: ' + JSON.stringify(agents));
 

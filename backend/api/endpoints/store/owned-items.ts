@@ -5,6 +5,7 @@ import {Method, Headers} from '../../http/http';
 import Result from '../../result';
 import {IUser} from '../../types/user';
 import IOwnedItems, {ItemTypeID} from '../../types/store/owned-items';
+import {generateUserHeaders} from '../helpers.ts';
 
 class OwnedItemsEndpoint extends CachedEndpoint<IOwnedItems, EnumError<ValorantClientError>, ValorantClient> {
     public user: IUser;
@@ -40,10 +41,7 @@ class OwnedItemsEndpoint extends CachedEndpoint<IOwnedItems, EnumError<ValorantC
     }
 
     public headers(): Headers | undefined {
-        return new Headers({
-            'X-Riot-Entitlements-JWT': `${this.user.authData.entitlementsToken}`,
-            Authorization: `Bearer ${this.user.authData.idToken}`,
-        });
+        return generateUserHeaders(this.user);
     }
 
     public refreshTimeoutDuration(_data: IOwnedItems): number {
